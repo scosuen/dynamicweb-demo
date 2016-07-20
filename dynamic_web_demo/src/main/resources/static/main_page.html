@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dynamic Web Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="js/flatui/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="js/flatui/css/flat-ui.min.css" rel="stylesheet">
+
+<script src="js/flatui/js/vendor/jquery.min.js"></script>
+<script src="js/flatui/js/flat-ui.min.js"></script>
+<script src="js/flatui/assets/js/application.js"></script>
+<script src="js/common_js.js"></script>
+<script src="js/pikaday.js"></script>
+
+<link href="js/my_style.css" rel="stylesheet" type="text/css" />
+
+<script>
+	$(function() {
+		$("#sub_page").load("setup_page.html");
+	})
+
+	function setup() {
+		$("#sub_page").load("setup_page.html");
+	}
+
+	function search() {
+		$("#sub_page").load("search_page.html");
+	}
+</script>
+</head>
+<body>
+	<div class="container">
+		<br>
+		<button type="button" class="btn btn-primary" onclick="setup()">Setup page</button> 
+		<button type="button" class="btn btn-primary" onclick="search()">Search page</button>
+
+		<div id="sub_page"></div>
+	</div>
+</body>
+</html>

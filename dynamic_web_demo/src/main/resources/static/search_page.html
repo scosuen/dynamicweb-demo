@@ -1,0 +1,93 @@
+<html>
+<head>
+<script>
+	function submit_search() {
+		$("#search_result").html("");
+		
+		var urlStr = restAPI_front_URL + "/search/" + $("#customer_name").val();
+		
+		$.ajax({
+			url : urlStr,
+			type : 'GET',
+			data : null,
+			async : false,
+			cache : false,
+			contentType : 'application/json',
+			processData : false,
+			success : searchSuccessFun,
+			error : function(requestObject, error, errorThrown) {
+				alert(error);
+				alert(errorThrown);
+			}
+		});
+	}
+	
+	var searchSuccessFun = function (data) {
+		var jsonObj = $.parseJSON(data);
+		if (jsonObj.error) {
+			alert(jsonObj.error.message);
+			return;
+		}
+
+		var htmlStr = "<table class='my_style_table'>";
+		htmlStr = htmlStr + "<tr>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Customer Name</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Order Total Price</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Product Name</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Description</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Price</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Amount</th>";
+		htmlStr = htmlStr + "</tr>";
+		
+		$.each(jsonObj, function(i, customer) {
+			htmlStr = htmlStr + "<tr>";
+			htmlStr = htmlStr + "<td class='my_style_thtd'>" + customer.customerName + "</td>";
+			
+			htmlStr = htmlStr + "<td class='my_style_thtd' colspan='6'>";
+			htmlStr = htmlStr + "<table>";
+			$.each(customer.orders, function(i, order) {
+				htmlStr = htmlStr + "<tr><td class='my_style_thtd'>" + order.totalPrice + "</td>";
+				htmlStr = htmlStr + "<td class='my_style_thtd'>";
+				htmlStr = htmlStr + "<table>";
+				$.each(order.products, function(i, product) {
+					htmlStr = htmlStr + "<tr>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.productName + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.description + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.price + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.amount + "</td>";
+					htmlStr = htmlStr + "</tr>";
+				});
+				htmlStr = htmlStr + "</table>";
+				htmlStr = htmlStr + "</td></tr>";
+			});
+			htmlStr = htmlStr + "</table>";
+			htmlStr = htmlStr + "</td>";
+			htmlStr = htmlStr + "</tr>";
+		});
+
+		htmlStr = htmlStr + "</table>";
+
+		$("#search_result").html(htmlStr);
+	}
+</script>
+</head>
+<body>
+	<br>
+	<h4>Search</h4>
+	<div class="row">
+		<div class="col-lg-2">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Customer names" id="customer_name">
+			</div>
+		</div>
+
+		<div class="col-lg-2">
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" onclick="submit_search()">Search</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="search_result"></div>
+</body>
+</html>

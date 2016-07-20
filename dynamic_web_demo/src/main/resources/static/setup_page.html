@@ -1,0 +1,93 @@
+<html>
+<head>
+<script>
+	var json = '[{"customerName":"Ying","orders":[{"totalPrice":350,"products":[{"productName":"keyboard","description":"A computer keyboard is an input device used to enter characters.","price":50,"amount":5},{"productName":"mouse","description":"A mouse is a small device that in order to point to a place on a display screen.","price":20,"amount":5}]},{"totalPrice":100,"products":[{"productName":"digital camera","description":"A digital camera is a camera that encodes digital images and videos.","price":100,"amount":1}]}]},{"customerName":"Scott","orders":[{"totalPrice":400,"products":[{"productName":"keyboard","description":"A computer keyboard is an input device used to enter characters.","price":100,"amount":4}]}]}]';
+
+	$(function() {
+		$("#records_json").val(json);
+	})
+
+	function submit() {
+		var urlStr = restAPI_front_URL + "/setup";
+
+		$.ajax({
+			url : urlStr,
+			type : 'POST',
+			data : $("#records_json").val(),
+			async : false,
+			cache : false,
+			contentType : 'text/plain',
+			processData : false,
+			success : function(returnData) {
+				if (returnData.error) {
+					alert("Search data error:" + data.error.message);
+					return;
+				} else {				
+					alert("Success." + returnData);
+				}
+			},
+			error : function(requestObject, error, errorThrown) {
+				alert(error);
+	            alert(errorThrown);
+			}
+		});
+		search();
+	}
+
+	function refresh() {
+		$("#records_table").html("");
+		var jsonObj = $.parseJSON($("#records_json").val());
+
+		var htmlStr = "<table class='my_style_table'>";
+		htmlStr = htmlStr + "<tr>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Customer Name</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Order Total Price</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Product Name</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Description</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Price</th>";
+		htmlStr = htmlStr + "<th class='my_style_thtd'>Amount</th>";
+		htmlStr = htmlStr + "</tr>";
+		
+		$.each(jsonObj, function(i, customer) {
+			htmlStr = htmlStr + "<tr>";
+			htmlStr = htmlStr + "<td class='my_style_thtd'>" + customer.customerName + "</td>";
+			
+			htmlStr = htmlStr + "<td class='my_style_thtd' colspan='6'>";
+			htmlStr = htmlStr + "<table>";
+			$.each(customer.orders, function(i, order) {
+				htmlStr = htmlStr + "<tr><td class='my_style_thtd'>" + order.totalPrice + "</td>";
+				htmlStr = htmlStr + "<td class='my_style_thtd'>";
+				htmlStr = htmlStr + "<table>";
+				$.each(order.products, function(i, product) {
+					htmlStr = htmlStr + "<tr>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.productName + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.description + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.price + "</td>";
+					htmlStr = htmlStr + "<td class='my_style_thtd'>" + product.amount + "</td>";
+					htmlStr = htmlStr + "</tr>";
+				});
+				htmlStr = htmlStr + "</table>";
+				htmlStr = htmlStr + "</td></tr>";
+			});
+			htmlStr = htmlStr + "</table>";
+			htmlStr = htmlStr + "</td>";
+			htmlStr = htmlStr + "</tr>";
+		});
+
+		htmlStr = htmlStr + "</table>";
+
+		$("#records_table").html(htmlStr);
+	}
+</script>
+</head>
+<body>
+	<br>
+	<h4>Set up</h4>
+	<textarea id="records_json" class="form-control" rows="3"></textarea>
+	<br>
+	<div id="records_table"></div>
+	<br>
+	<button type="button" class="btn btn-primary" onclick="refresh()">Refresh</button>
+	<button type="button" class="btn btn-primary" onclick="submit()">Setup</button>
+</body>
+</html>

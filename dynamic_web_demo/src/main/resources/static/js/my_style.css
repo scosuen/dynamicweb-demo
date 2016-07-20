@@ -1,0 +1,12 @@
+.my_style_table {
+border-collapse: collapse;
+width: 100%;
+}
+
+.my_style_thtd {
+	padding: 8px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+.my_style_tr:hover{background-color:#1ABC9C}
